@@ -789,24 +789,5 @@ This project is derived from **xv6**, a teaching operating system originally dev
 | Project type | Educational operating-systems kernel, single-feature focus (Copy-on-Write `fork()`) |
 | Current implementation | `fork()` → `cowuvm()` (shared, read-only pages + reference counting) → `cowpgflthandler()` (lazy private-page allocation on write fault) |
 
----
+___
 
-### Claims intentionally avoided (not verifiable from the repository)
-
-- Any specific performance numbers, benchmark results, or fork-latency measurements.
-- Any statement that automated CI exists or that tests currently "pass" in an automated sense — they are documented as manually run inside QEMU.
-- Any license terms, since no `LICENSE` file exists.
-- Any confirmation that native Windows or macOS builds work, since neither is present or evidenced in the repository.
-- Any claim about multiprocessor (`CPUS > 1`) correctness of the CoW path.
-- GitHub-level metadata this document cannot see from the archive alone (star count, last-commit timestamp, open issues) — omitted rather than guessed.
-
-### Commands verified against the repository
-
-`make`, `make clean`, `make run`, `make qemu`, `make qemu-nox`, `make qemu-gdb`, `make qemu-nox-gdb`, `make bochs`, `make depend`, `make dist` — all present in the top-level `Makefile`'s `.PHONY` list and recipes. The `QEMU=qemu-system-i386` override is a recommendation based on reading the Makefile's QEMU auto-detection logic, not a literal string found in the repository.
-
-### Recommended GitHub repository metadata improvements (not part of README.md)
-
-- Add a `LICENSE` file (e.g. MIT, matching common xv6-derivative licensing) if the intent is for this to be reusable/open-source; otherwise consider explicitly stating "All rights reserved" in the repository description to avoid ambiguity.
-- Add GitHub topics such as `xv6`, `operating-systems`, `copy-on-write`, `kernel-development`, `x86`, `qemu` to improve discoverability.
-- Add a one-line repository description on GitHub matching the hero tagline above, so it appears in search results and the repository list view.
-- Consider adding a minimal GitHub Actions workflow that at least confirms `make` succeeds on a fresh Ubuntu runner (with `gcc-multilib`/`g++-multilib` installed), even without emulator-based test execution, to give the repository a real, honest "build" badge.
