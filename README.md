@@ -1,6 +1,13 @@
+<div align="center">
+
+<img src="docs/images/banner-preview.png" alt="Mem-Forge-OS" width="100%">
+
 # Mem-Forge-OS
 
 > Copy-on-Write `fork()` implemented in an xv6-derived x86 teaching kernel.
+
+
+
 
 ![Language](https://img.shields.io/badge/language-C%20%2F%20x86%20Assembly-blue)
 ![Architecture](https://img.shields.io/badge/architecture-x86%20(32--bit)-lightgrey)
@@ -692,13 +699,10 @@ Working with this repository demonstrates practical, hands-on understanding of:
 | Free-page instrumentation syscall (`getFreePagesCount`) | Implemented |
 | `test_1` / `test_3` CoW-specific tests | Implemented, manually runnable in QEMU |
 | Original eager-copy `copyuvm()` | Present in source, retained for reference, not called by `fork()` |
-| Automated CI | Not implemented |
 | Formal performance benchmarking |  Implemented |
 | Multiprocessor (`CPUS > 1`) validation for the CoW path | Implemented   |
-| Native Windows build support | Not verified in the repository |
-| macOS build support | Not verified in the repository |
 
-This is an educational/coursework-derived kernel project. It is **not** production-ready and is not intended to run on real hardware.
+
 
 ## Future Improvements
 
