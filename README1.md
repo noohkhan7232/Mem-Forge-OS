@@ -9,16 +9,7 @@
 
 Mem-Forge-OS is a modified [xv6](https://pdos.csail.mit.edu/6.828/2012/xv6.html) kernel in which the standard `fork()` system call — which eagerly duplicates a process's entire user address space — has been replaced with a **Copy-on-Write (CoW) fork**. Parent and child initially share the same physical pages read-only; a private, writable copy of a page is only allocated when one of the two processes actually writes to it, using page-fault-driven lazy copying and per-page reference counting.
 
-
----
-
-## Quick Summary
-
-Normally, when a process calls `fork()`, the operating system copies that process's *entire* memory into a brand-new copy for the child — even though most of that memory is often never touched again before the child replaces itself with a different program (via `exec()`). That's wasted work and wasted RAM.
-
-Mem-Forge-OS fixes this by making `fork()` lazy: the parent and child start out **sharing the same physical memory pages**, marked read-only. Nothing is actually duplicated yet. Only if — and when — one of them tries to *write* to a shared page does the kernel step in, quietly allocate a private copy of just that one 4 KB page, and let the write continue. This is the classic **Copy-on-Write (CoW)** technique used by real-world Unix kernels (Linux included).
-
-**Real-world analogy:** think of two people sharing a Google Doc set to "view only." Nothing gets copied just because a second person opened it. The moment one of them actually tries to type something, a private, editable copy of that paragraph is created just for them — the original stays untouched for everyone else. Mem-Forge-OS does the same thing at the level of physical memory pages every time a process forks.
+> **Provenance note.** The original `README.md` credited starter code, project description, and test cases to the CS 537 (Spring 2023) course staff at the University of Wisconsin–Madison. That acknowledgment is preserved in [§ License / Attribution](#license--attribution). This document describes the code as it exists in this repository, not a generic xv6 tutorial.
 
 ---
 
@@ -39,23 +30,23 @@ Mem-Forge-OS fixes this by making `fork()` lazy: the parent and child start out 
 13. [Linux Installation](#linux-installation)
 14. [macOS](#macos)
 15. [Running the Operating System](#running-the-operating-system)
-16. [Screenshots](#screenshots)
-17. [Running Tests](#running-tests)
-18. [How to Verify Copy-on-Write](#how-to-verify-copy-on-write)
-19. [Debugging](#debugging)
-20. [Important Kernel Functions](#important-kernel-functions)
-21. [Technical Deep Dive](#technical-deep-dive)
-22. [Before vs After](#before-vs-after)
-23. [Performance Discussion](#performance-discussion)
-24. [Design Trade-offs](#design-trade-offs)
-25. [Limitations](#limitations)
-26. [Security Considerations](#security-considerations)
-27. [Learning Outcomes](#learning-outcomes)
-28. [Project Status](#project-status)
-29. [Future Improvements](#future-improvements)
-30. [Contributing](#contributing)
-31. [Development Workflow](#development-workflow)
-32. [Troubleshooting](#troubleshooting)
+16. [Running Tests](#running-tests)
+17. [How to Verify Copy-on-Write](#how-to-verify-copy-on-write)
+18. [Debugging](#debugging)
+19. [Important Kernel Functions](#important-kernel-functions)
+20. [Technical Deep Dive](#technical-deep-dive)
+21. [Before vs After](#before-vs-after)
+22. [Performance Discussion](#performance-discussion)
+23. [Design Trade-offs](#design-trade-offs)
+24. [Limitations](#limitations)
+25. [Security Considerations](#security-considerations)
+26. [Learning Outcomes](#learning-outcomes)
+27. [Project Status](#project-status)
+28. [Future Improvements](#future-improvements)
+29. [Contributing](#contributing)
+30. [Development Workflow](#development-workflow)
+31. [Troubleshooting](#troubleshooting)
+32. [License / Attribution](#license--attribution)
 33. [Repository Metadata](#repository-metadata)
 
 ---
@@ -500,20 +491,6 @@ On boot you should see the standard xv6 boot sequence (CPU initialization messag
 
 Shut down by exiting QEMU with **Ctrl-a x** (or closing the QEMU window in graphical mode); xv6 itself has no shutdown/halt command exposed at the shell.
 
-## Screenshots
-
-> **Add your images here:** place exactly three image files in `docs/images/` at the repository root, named `screenshot-1.png`, `screenshot-2.png`, and `screenshot-3.png` (PNG or JPG both work — just keep the filenames and extension consistent with what you use below). Once the files are in place, they will render automatically wherever this README is viewed on GitHub.
-
-| Boot / Shell | CoW Test Output | Debugging Session |
-|---|---|---|
-| ![xv6 boot and shell](docs/images/screenshot-1.png) | ![CoW test output](docs/images/screenshot-2.png) | ![GDB debugging session](docs/images/screenshot-3.png) |
-
-Suggested captures for each slot, though any three representative screenshots work:
-
-1. **Boot / Shell** — the QEMU console right after boot, showing the xv6 startup messages and the `$` shell prompt.
-2. **CoW Test Output** — the console output of `test_1` and/or `test_3` from the xv6 shell, showing the `XV6_COW SUCCESS` result.
-3. **Debugging Session** — a GDB session (`make qemu-nox-gdb`) with a breakpoint hit inside `cowuvm` or `cowpgflthandler`.
-
 ## Running Tests
 
 This repository ships two purpose-written CoW tests plus the general xv6 process/stress tests, all built as ordinary user programs and run from the xv6 shell after `make qemu`/`make qemu-nox`.
@@ -695,8 +672,8 @@ Working with this repository demonstrates practical, hands-on understanding of:
 | `test_1` / `test_3` CoW-specific tests | Implemented, manually runnable in QEMU |
 | Original eager-copy `copyuvm()` | Present in source, retained for reference, not called by `fork()` |
 | Automated CI | Not implemented |
-| Formal performance benchmarking |  Implemented |
-| Multiprocessor (`CPUS > 1`) validation for the CoW path | Implemented   |
+| Formal performance benchmarking | Not implemented |
+| Multiprocessor (`CPUS > 1`) validation for the CoW path | Not verified in the repository |
 | Native Windows build support | Not verified in the repository |
 | macOS build support | Not verified in the repository |
 
@@ -794,6 +771,12 @@ Commit changes
 - *Cause:* The kernel is built and linked for 32-bit protected mode with explicit low-memory link addresses (`0x100000`, `0x7c00`, `0x7000`, `0x0`); it is an i386 target, not x86-64.
 - *Solution:* Always invoke `qemu-system-i386` (as the `QEMU=` override above does), not `qemu-system-x86_64`.
 
+## License / Attribution
+
+**No `LICENSE` file is present in this repository as of this audit.** No license terms are stated or implied here beyond what GitHub's default "all rights reserved" behavior provides in the absence of an explicit license; do not assume this project is open-source-licensed for reuse without confirming with the repository owner.
+
+This project is derived from **xv6**, a teaching operating system originally developed at MIT (based on Sixth Edition Unix). The original `README.md` in this repository credited the CS 537 (Spring 2023) course staff at the **University of Wisconsin–Madison** for starter code, the project description, and test cases — that attribution is preserved here.
+
 ## Repository Metadata
 
 | Field | Value |
@@ -806,26 +789,5 @@ Commit changes
 | Project type | Educational operating-systems kernel, single-feature focus (Copy-on-Write `fork()`) |
 | Current implementation | `fork()` → `cowuvm()` (shared, read-only pages + reference counting) → `cowpgflthandler()` (lazy private-page allocation on write fault) |
 
----
-
- 
-
-Author : NOOH KHAN
-
-###  Project Status
-
-**Completed & Open for Contributions**
-
-###  Contributing
-
-Contributions are welcome!
-If you'd like to improve this project, feel free to fork the repository, make your changes, and submit a pull request.
-
-Let's build and improve this project together! 
-
-### 📜 License
-
-**MIT License**
-
----
+___
 
