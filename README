@@ -500,17 +500,19 @@ On boot you should see the standard xv6 boot sequence (CPU initialization messag
 
 Shut down by exiting QEMU with **Ctrl-a x** (or closing the QEMU window in graphical mode); xv6 itself has no shutdown/halt command exposed at the shell.
 
-## Outputs
+## Screenshots
 
-> 
-| Boot / Shell | CoW Test Output |  |
+> **Add your images here:** place exactly three image files in `docs/images/` at the repository root, named `screenshot-1.png`, `screenshot-2.png`, and `screenshot-3.png` (PNG or JPG both work — just keep the filenames and extension consistent with what you use below). Once the files are in place, they will render automatically wherever this README is viewed on GitHub.
+
+| Boot / Shell | CoW Test Output | Debugging Session |
 |---|---|---|
-| ![xv6 boot and shell](docs/images/screenshot-1.png) | ![CoW test output](docs/images/screenshot-2.png) | 
+| ![xv6 boot and shell](docs/images/screenshot-1.png) | ![CoW test output](docs/images/screenshot-2.png) | ![GDB debugging session](docs/images/screenshot-3.png) |
 
+Suggested captures for each slot, though any three representative screenshots work:
 
 1. **Boot / Shell** — the QEMU console right after boot, showing the xv6 startup messages and the `$` shell prompt.
 2. **CoW Test Output** — the console output of `test_1` and/or `test_3` from the xv6 shell, showing the `XV6_COW SUCCESS` result.
-
+3. **Debugging Session** — a GDB session (`make qemu-nox-gdb`) with a breakpoint hit inside `cowuvm` or `cowpgflthandler`.
 
 ## Running Tests
 
